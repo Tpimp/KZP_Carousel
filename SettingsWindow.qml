@@ -48,4 +48,7 @@ Window{
             top:settingsBackground.top
         }
     }
+    Component.onCompleted: {
+        settingsWindow.lower();
+    }
 }

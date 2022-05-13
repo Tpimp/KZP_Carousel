@@ -10,7 +10,6 @@ Rectangle{
     property int index: 0
     property var gifs:[]
     property var apps:[]
-    z:100
     Connections{
         target:PreviewWindow
         function onSettingsToggled(open: bool) {
@@ -21,6 +20,7 @@ Rectangle{
                 // ask the window to save
                 //var data = settingsWindow.item.getData();
                 //console.log(data);
+                settingsWindow.active = false;
             } else {
                 settingsWindow.active = open;
             }
