@@ -1,0 +1,9 @@
+{
+    "name":"KZP Carousel",
+    "contentType":"Qml",
+    "version":1,
+    "versionText":"v0.01",
+    "icon":"carousel_icon.svg",
+    "settings":"Settings.qml",
+    "entry":"carousel.qml"
+}

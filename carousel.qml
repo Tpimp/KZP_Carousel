@@ -37,7 +37,7 @@ Rectangle{
         id: settingsWindow
         active:false
         anchors.fill: parent
-        sourceComponent:SettingsWindow{
+        sourceComponent:Settings{
             x: PreviewWindow.x - 275
             y: PreviewWindow.y - 6
         }

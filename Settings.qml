@@ -10,9 +10,23 @@ Window{
     maximumHeight:600
     minimumWidth:600
     minimumHeight:600
-    flags: Qt.FramelessWindowHint |  Qt.WA_TranslucentBackground
+    flags: Qt.FramelessWindowHint |  Qt.WA_TranslucentBackground | Qt.WindowStaysOnBottomHint
+    modality: Qt.WindowModal
     title:"Carousel Settings"
     color:"transparent"
+    onActiveChanged: {
+        settingsWindow.lower();
+    }
+    onVisibilityChanged: {
+        settingsWindow.lower();
+    }
+    onActiveFocusItemChanged: {
+        settingsWindow.lower();
+    }
+    onFocusObjectChanged: {
+        settingsWindow.lower();
+    }
+
     Connections{
         target:PreviewWindow
         function onXChanged(x: real){
@@ -43,12 +57,10 @@ Window{
         width:332
         radius:width
         border.width:8
+        color:"transparent"
         anchors{
             horizontalCenter: settingsBackground.right
             top:settingsBackground.top
         }
-    }
-    Component.onCompleted: {
-        settingsWindow.lower();
     }
 }
