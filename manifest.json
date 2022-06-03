@@ -5,6 +5,5 @@
     "versionText":"v0.01",
     "icon":"carousel_icon.svg",
     "settings":"Settings.qml",
-    "entry":"carousel.qml",
-    "files":["x.png"]
+    "entry":"carousel.qml"
 }
