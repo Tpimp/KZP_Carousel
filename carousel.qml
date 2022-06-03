@@ -10,110 +10,89 @@ Rectangle{
     property int index: 0
     property var gifs:[]
     property var apps:[]
-    Connections{
-        target:PreviewWindow
-        function onSettingsToggled(open: bool) {
-            if(open && !PreviewWindow.detached) {
-                PreviewWindow.detachPreview(true);
-            }
-            if(settingsWindow.item) {
-                // ask the window to save
-                //var data = settingsWindow.item.getData();
-                //console.log(data);
-                settingsWindow.active = false;
-            } else {
-                settingsWindow.active = open;
-            }
-
-        }
-        function onDetachChanged( detach: bool) {
-            if(!detach) {
-                settingsWindow.active = false;
-            }
-        }
-    }
-
     Loader{
-        id: settingsWindow
-        active:false
-        anchors.fill: parent
-        sourceComponent:Settings{
-            x: PreviewWindow.x - 275
-            y: PreviewWindow.y - 6
-        }
-    }
-
-    Rectangle{
-        id:appContainer
-        color:"black"
+        id: currentApp
+        anchors.fill:parent
+        active:true
+        visible:active
         anchors.centerIn:parent
         width:320
         height:320
-        visible:true
-        Loader{
-            id: currentApp
-            anchors.fill:parent
-            active:true
-            onStatusChanged:{
-                if(status == Loader.Ready) {
-                    AppController.scheduleRedraw();
-                    animatedImage.source = ""
-                    image.source = ""
-                    AppController.setTimerDrawn(true);
-                }
-            }
+    }
+    Timer{
+        id:setAppTimer
+        interval:3
+        repeat:false
+        running:false
+        onTriggered:{
+            animatedImage.playing = false;
+            animatedImage.source = ""
+            image.source = ""
+            playTimer.restart();
         }
     }
 
     AnimatedImage{
         id: animatedImage
-        smooth: true
         visible: animatedImage.source != ""
         cache: false
         source:""
         fillMode: Image.PreserveAspectCrop
         playing:true
-        anchors.centerIn: parent
+        x:0
+        y:0
         width:320
         height:320
-        onFrameChanged: {
-            AppController.scheduleRedraw();
+        onCurrentFrameChanged: {
+            if((this.frameCount >= 35) && (this.currentFrame >= this.frameCount-1) ) {
+                playTimer.interval = 100;
+                playTimer.restart();
+            }
         }
     }
     Image{
         id: image
-        smooth: true
         visible: image.source != ""
         cache: false
-        fillMode: Image.PreserveAspectFit
+        fillMode: Image.PreserveAspectCrop
         anchors.centerIn: parent
         width:320
         height:320
+        onStatusChanged: {
+//            if(status == Image.Ready){
+//                AppController.scheduleRedraw();
+//            }
+        }
     }
     Timer{
         id:playTimer
-        interval:5000
+        interval:5500
         repeat:true
         running: true
         onTriggered:{
             switch(carousel.index){
                 case 0: {
-                    playTimer.interval = 5300;
+                    ++carousel.index;
+                    playTimer.stop();
                     currentApp.source = carousel.apps[Math.floor(Math.random() * carousel.apps.length)];
+                    currentApp.active = true;
+                    playTimer.interval = 6000;
+                    setAppTimer.start()
+                    AppController.frameDelay = 185;
                     break;
                 }
                 default: {
-                    carousel.index = -1;
-                    AppController.setTimerDrawn(false);
-                    playTimer.interval = 10000;
+                    currentApp.active = false;
+                    carousel.index = 0;
+                    playTimer.interval = 12500;
                     var index = Math.floor(Math.random() * carousel.gifs.length);
                     var path = carousel.gifs[index];
                     animatedImage.source = path;
+                    animatedImage.playing = true;
                     image.source = "";
-                    currentApp.source = "";
+                    AppController.frameDelay = 90;
                 }
             }
-            ++carousel.index;
         }
     }
 
