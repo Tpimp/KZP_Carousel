@@ -72,34 +72,48 @@ Rectangle{
         onTriggered:{
             switch(carousel.index){
                 case 0: {
-                    ++carousel.index;
-                    playTimer.stop();
-                    currentApp.source = carousel.apps[Math.floor(Math.random() * carousel.apps.length)];
-                    currentApp.active = true;
-                    playTimer.interval = 6000;
-                    setAppTimer.start()
-                    AppController.frameDelay = 185;
+                    setNextApp();
                     break;
                 }
                 default: {
-                    currentApp.active = false;
-                    carousel.index = 0;
-                    playTimer.interval = 12500;
-                    var index = Math.floor(Math.random() * carousel.gifs.length);
-                    var path = carousel.gifs[index];
-                    animatedImage.source = path;
-                    animatedImage.playing = true;
-                    image.source = "";
-                    AppController.frameDelay = 90;
+                    setNextGif();
                 }
             }
         }
+    }
+
+    function setNextGif() {
+        currentApp.active = false;
+        carousel.index = 0;
+        playTimer.interval = 12500;
+        var index = Math.floor(Math.random() * carousel.gifs.length);
+        var path = carousel.gifs[index];
+        animatedImage.source = path;
+        animatedImage.playing = true;
+        image.source = "";
+        AppController.frameDelay = 90;
+
+    }
+    function setNextApp() {
+        if(carousel.gifs.length > 0) {
+            ++carousel.index;
+        }
+        playTimer.stop();
+        currentApp.source = carousel.apps[Math.floor(Math.random() * carousel.apps.length)];
+        currentApp.active = true;
+        playTimer.interval = 6000;
+        setAppTimer.start()
+        AppController.frameDelay = 185;
     }
 
     Component.onCompleted: {
         var settings = AppController.loadAppSettings();
         carousel.gifs = settings.gifs;
         carousel.apps = settings.apps;
-        animatedImage.source = carousel.gifs[Math.floor(Math.random() * carousel.gifs.length)]
+        if(carousel.gifs.length > 0 ) {
+            setNextGif();
+        } else if (carousel.apps.length > 0){
+            setNextApp();
+        }
     }
 }
